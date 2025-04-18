@@ -5,7 +5,8 @@ const ContactListView = () => import('@/views/ContactListView.vue')
 const ContactDetailsView = () => import('@/views/ContactDetailsView.vue')
 const AddContactView = () => import('@/views/AddContactView.vue')
 const EditContactView = () => import('@/views/EditContactView.vue')
-const LoginView = () => import('@/views/LoginView.vue')
+const LoginView = () => import('../views/LoginView.vue')
+
 const RegisterView = () => import('@/views/RegisterView.vue')
 
 const routes = [

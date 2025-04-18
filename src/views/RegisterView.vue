@@ -77,12 +77,18 @@
               ></span>
               Registering...
             </span>
-            <span v-else> <i class="fas fa-user-plus me-2"></i>Register </span>
+            <span v-else>
+              <i class="fas fa-user-plus me-2"></i>Register
+            </span>
           </button>
         </div>
 
         <div v-if="errorMessage" class="alert alert-danger">
           <i class="fas fa-exclamation-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div v-if="successMessage" class="alert alert-success">
+          <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
         </div>
 
         <div class="text-center mt-3">
@@ -101,7 +107,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import AuthService from "@/services/AuthService";
+import axios from "axios";
 
 const router = useRouter();
 const user = ref({
@@ -111,17 +117,31 @@ const user = ref({
 });
 const loading = ref(false);
 const errorMessage = ref("");
+const successMessage = ref("");
 const showPassword = ref(false);
+
+const API_URL = "http://localhost:3000/users";
 
 const handleRegister = async () => {
   loading.value = true;
   errorMessage.value = "";
+  successMessage.value = "";
+
   try {
-    await AuthService.register(user.value);
-    router.push("/");
+    const existing = await axios.get(`${API_URL}?email=${user.value.email}`);
+    if (existing.data.length > 0) {
+      throw new Error("Email already in use.");
+    }
+
+    await axios.post(API_URL, user.value);
+
+    successMessage.value = "Registration successful! Redirecting to login...";
+
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
   } catch (error) {
-    errorMessage.value =
-      error.message || "Registration failed. Please try again.";
+    errorMessage.value = error.message || "Registration failed. Please try again.";
   } finally {
     loading.value = false;
   }
@@ -129,7 +149,6 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-/* Shared styles with login component */
 .auth-container {
   min-height: 100vh;
   display: flex;

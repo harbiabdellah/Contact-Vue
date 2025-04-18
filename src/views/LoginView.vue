@@ -83,7 +83,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import AuthService from '@/services/AuthService'
+import axios from 'axios'
 
 const router = useRouter()
 const user = ref({
@@ -94,12 +94,24 @@ const loading = ref(false)
 const errorMessage = ref('')
 const showPassword = ref(false)
 
+const API_URL = "http://localhost:3000/users";
+
 const handleLogin = async () => {
   loading.value = true
   errorMessage.value = ''
+
   try {
-    await AuthService.login(user.value)
-    router.push('/')
+    const response = await axios.get(`${API_URL}?email=${user.value.email}&password=${user.value.password}`);
+
+    if (response.data.length === 0) {
+      throw new Error("Invalid email or password.")
+    }
+
+    // Optionally store user session info
+    localStorage.setItem("user", JSON.stringify(response.data[0]))
+
+    // Redirect
+    router.push("/")
   } catch (error) {
     errorMessage.value = error.message || 'Login failed. Please try again.'
   } finally {
