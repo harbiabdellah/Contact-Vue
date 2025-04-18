@@ -40,7 +40,7 @@
       "email": "madonnaessam2002@gmail.com",
       "phone": "01027607255",
       "address": "street one",
-      "isFavorite": true,
+      "isFavorite": false,
       "userId": "6940"
     }
   ],
@@ -73,6 +73,12 @@
       "id": "6940",
       "name": "madoona essam",
       "email": "madonnaessam1@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "0cf8",
+      "name": "ahmed",
+      "email": "ahm@mail.com",
       "password": "123456"
     }
   ]
