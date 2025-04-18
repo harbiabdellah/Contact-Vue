@@ -19,7 +19,6 @@ export const useContactStore = defineStore('contacts', () => {
   const error = ref(null)
   const searchQuery = ref('')
 
-  // الحصول على الرمز المميز من التخزين المحلي
   const getAuthHeader = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     if (user && user.accessToken) {

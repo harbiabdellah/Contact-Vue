@@ -1,42 +1,61 @@
 <template>
   <Transition name="fade" mode="out-in">
-    <div class="contact-card" :class="{ 'favorite': contact.isFavorite }">
-      <div class="contact-info">
-        <h3>{{ contact.name }}</h3>
-        <div class="contact-details">
-          <p><span class="label">Email:</span> <a :href="`mailto:${contact.email}`">{{ contact.email }}</a></p>
-          <p><span class="label">Phone:</span> <a :href="`tel:${contact.phone}`">{{ contact.phone }}</a></p>
-          <p v-if="contact.address"><span class="label">Address:</span> {{ contact.address }}</p>
+    <div class="card mb-3 shadow-sm hover-shadow border-0 h-100" 
+         :class="{ 'border-start border-warning border-4': contact.isFavorite }">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-user me-2"></i>
+            {{ contact.name }}
+            <span v-if="contact.isFavorite" class="ms-2 text-warning">
+              <i class="fas fa-star"></i>
+            </span>
+          </h3>
+          <button 
+            @click.stop="toggleFavorite" 
+            class="btn btn-sm btn-outline-warning"
+            :aria-label="contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+          >
+            <i :class="contact.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
+          </button>
         </div>
-      </div>
 
-      <div class="contact-actions">
-        <button 
-          @click.stop="toggleFavorite" 
-          class="favorite-btn"
-          :aria-label="contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-        >
-          {{ contact.isFavorite ? '★' : '☆' }}
-        </button>
-        <router-link 
-          :to="{ name: 'contact-details', params: { id: contact.id } }"
-          class="btn details-btn"
-        >
-          Details
-        </router-link>
-        <router-link 
-          :to="{ name: 'edit-contact', params: { id: contact.id } }"
-          class="btn edit-btn"
-        >
-          Edit
-        </router-link>
-        <button 
-          @click.stop="deleteContact" 
-          class="btn delete-btn"
-          aria-label="Delete contact"
-        >
-          Delete
-        </button>
+        <div class="contact-details mb-3">
+          <p class="mb-2">
+            <i class="fas fa-envelope me-2 text-muted"></i>
+            <a :href="`mailto:${contact.email}`" class="text-decoration-none">{{ contact.email }}</a>
+          </p>
+          <p class="mb-2">
+            <i class="fas fa-phone me-2 text-muted"></i>
+            <a :href="`tel:${contact.phone}`" class="text-decoration-none">{{ contact.phone }}</a>
+          </p>
+          <p v-if="contact.address" class="mb-0">
+            <i class="fas fa-map-marker-alt me-2 text-muted"></i>
+            {{ contact.address }}
+          </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <router-link 
+            :to="{ name: 'contact-details', params: { id: contact.id } }"
+            class="btn btn-sm btn-outline-primary flex-grow-1"
+          >
+            <i class="fas fa-info-circle me-1"></i> Details
+          </router-link>
+          <router-link 
+            :to="{ name: 'edit-contact', params: { id: contact.id } }"
+            class="btn btn-sm btn-outline-success flex-grow-1"
+          >
+            <i class="fas fa-edit me-1"></i> Edit
+          </router-link>
+          <button 
+            @click.stop="deleteContact" 
+            class="btn btn-sm btn-outline-danger flex-grow-1"
+            aria-label="Delete contact"
+          >
+            <i class="fas fa-trash-alt me-1"></i> Delete
+          </button>
+        </div>
       </div>
     </div>
   </Transition>
@@ -68,52 +87,18 @@ const deleteContact = async () => {
     await contactStore.deleteContact(props.contact.id)
   }
 }
-
-const goToDetails = () => {
-  router.push({ name: 'contact-details', params: { id: props.contact.id } })
-}
 </script>
 
 <style scoped>
-.contact-card {
+.hover-shadow {
   transition: all 0.3s ease;
 }
 
-.favorite {
-  border-left: 4px solid gold;
-  background-color: #fffef0;
+.hover-shadow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-.contact-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.details-btn {
-  background-color: #42b983;
-  color: white;
-}
-
-.edit-btn {
-  background-color: #3498db;
-  color: white;
-}
-
-.delete-btn {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-}
-
-/* Improved transitions */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s, transform 0.3s;
@@ -123,5 +108,25 @@ const goToDetails = () => {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(20px);
+}
+
+.contact-details a {
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.contact-details a:hover {
+  color: #42b983;
+  text-decoration: underline;
+}
+
+.btn-sm {
+  min-width: 100px;
+}
+
+@media (max-width: 576px) {
+  .btn-sm {
+    flex-grow: 1 !important;
+  }
 }
 </style>

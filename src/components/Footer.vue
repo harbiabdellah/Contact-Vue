@@ -1,56 +1,43 @@
 <template>
-  <footer class="footer">
-    <div class="footer-content">
-      <p>Contact App © {{ new Date().getFullYear() }} - All rights reserved</p>
-      <div class="social-links">
-        <a href="#" class="social-link">Twitter</a>
-        <a href="#" class="social-link">Facebook</a>
-        <a href="#" class="social-link">GitHub</a>
+  <footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <p class="mb-0">
+            <i class="fas fa-address-book me-2"></i>
+            Contact App © {{ new Date().getFullYear() }} - All rights reserved
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <div class="social-links">
+            <a href="#" class="text-white mx-2" aria-label="Twitter">
+              <i class="fab fa-twitter fa-lg"></i>
+            </a>
+            <a href="#" class="text-white mx-2" aria-label="Facebook">
+              <i class="fab fa-facebook fa-lg"></i>
+            </a>
+            <a href="#" class="text-white mx-2" aria-label="GitHub">
+              <i class="fab fa-github fa-lg"></i>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
-.footer {
-  background-color: #2c3e50;
-  color: white;
-  padding: 1.5rem 0;
-  margin-top: 2rem;
+footer {
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.social-links a {
+  transition: all 0.3s ease;
+  display: inline-block;
 }
 
-.social-links {
-  display: flex;
-  gap: 1rem;
-}
-
-.social-link {
-  color: white;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.social-link:hover {
-  color: #42b983;
-}
-
-@media (max-width: 768px) {
-  .footer-content {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
+.social-links a:hover {
+  color: #42b983 !important;
+  transform: translateY(-2px);
 }
 </style>

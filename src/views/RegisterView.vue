@@ -1,113 +1,175 @@
-<!-- src/views/RegisterView.vue -->
 <template>
-  <div class="register-container">
-    <h1>Register</h1>
-    <form @submit.prevent="handleRegister">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input v-model="user.name" type="text" id="name" required>
+  <div class="auth-container">
+    <div class="auth-card shadow-lg">
+      <div class="auth-header text-center mb-4">
+        <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+        <h1 class="h2 mb-3">Create Account</h1>
+        <p class="text-muted">Join us today to start managing your contacts</p>
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input v-model="user.email" type="email" id="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input v-model="user.password" type="password" id="password" required>
-      </div>
-      
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-      
-      <button type="submit" :disabled="loading">
-        <span v-if="loading">Registering...</span>
-        <span v-else>Register</span>
-      </button>
-      
-      <p class="login-link">
-        Already have an account? <router-link to="/login">Login here</router-link>
-      </p>
-    </form>
+
+      <form @submit.prevent="handleRegister" class="auth-form">
+        <div class="mb-3">
+          <label for="name" class="form-label">
+            <i class="fas fa-user me-2"></i>Full Name
+          </label>
+          <input
+            v-model="user.name"
+            type="text"
+            class="form-control form-control-lg"
+            id="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope me-2"></i>Email Address
+          </label>
+          <input
+            v-model="user.email"
+            type="email"
+            class="form-control form-control-lg"
+            id="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock me-2"></i>Password
+          </label>
+          <div class="input-group">
+            <input
+              v-model="user.password"
+              :type="showPassword ? 'text' : 'password'"
+              class="form-control form-control-lg"
+              id="password"
+              placeholder="Create a password"
+              required
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              @click="showPassword = !showPassword"
+              aria-label="Toggle password visibility"
+            >
+              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="form-text">
+            Use 8 or more characters with a mix of letters, numbers & symbols
+          </div>
+        </div>
+
+        <div class="d-grid mb-3">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            :disabled="loading"
+          >
+            <span v-if="loading">
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Registering...
+            </span>
+            <span v-else> <i class="fas fa-user-plus me-2"></i>Register </span>
+          </button>
+        </div>
+
+        <div v-if="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div class="text-center mt-3">
+          <p class="text-muted">
+            Already have an account?
+            <router-link to="/login" class="text-primary fw-bold"
+              >Login here</router-link
+            >
+          </p>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import AuthService from '@/services/AuthService'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import AuthService from "@/services/AuthService";
 
-const router = useRouter()
+const router = useRouter();
 const user = ref({
-  name: '',
-  email: '',
-  password: ''
-})
-const loading = ref(false)
-const errorMessage = ref('')
+  name: "",
+  email: "",
+  password: "",
+});
+const loading = ref(false);
+const errorMessage = ref("");
+const showPassword = ref(false);
 
 const handleRegister = async () => {
-  loading.value = true
-  errorMessage.value = ''
-  
+  loading.value = true;
+  errorMessage.value = "";
   try {
-    await AuthService.register(user.value)
-    router.push('/')
+    await AuthService.register(user.value);
+    router.push("/");
   } catch (error) {
-    errorMessage.value = error.message
-    console.error('Registration error:', error)
+    errorMessage.value =
+      error.message || "Registration failed. Please try again.";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
-.register-container {
-  max-width: 400px;
-  margin: 2rem auto;
+/* Shared styles with login component */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
+.auth-card {
+  max-width: 450px;
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  background-color: white;
 }
 
-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.auth-header {
+  padding-bottom: 1rem;
 }
 
-.error-message {
-  color: #e74c3c;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: #ffebee;
-  border-radius: 4px;
+.auth-form {
+  margin-top: 1.5rem;
 }
 
-.login-link {
-  margin-top: 1rem;
-  text-align: center;
+.form-control-lg {
+  padding: 0.75rem 1rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .auth-container {
+    padding: 1rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem;
+  }
 }
 </style>

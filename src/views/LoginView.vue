@@ -1,23 +1,82 @@
 <template>
-  <div class="login-container">
-    <h1>Login</h1>
-    <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input v-model="user.email" type="email" id="email" required>
+  <div class="auth-container">
+    <div class="auth-card shadow-lg">
+      <div class="auth-header text-center mb-4">
+        <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+        <h1 class="h2 mb-3">Welcome Back</h1>
+        <p class="text-muted">Please enter your credentials to login</p>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input v-model="user.password" type="password" id="password" required>
-      </div>
-      <button type="submit" :disabled="loading">
-        <span v-if="loading">Logging in...</span>
-        <span v-else>Login</span>
-      </button>
-      <p class="register-link">
-        Don't have an account? <router-link to="/register">Register here</router-link>
-      </p>
-    </form>
+
+      <form @submit.prevent="handleLogin" class="auth-form">
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope me-2"></i>Email Address
+          </label>
+          <input 
+            v-model="user.email" 
+            type="email" 
+            class="form-control form-control-lg" 
+            id="email" 
+            placeholder="Enter your email"
+            required
+          >
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock me-2"></i>Password
+          </label>
+          <div class="input-group">
+            <input 
+              v-model="user.password" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="form-control form-control-lg" 
+              id="password" 
+              placeholder="Enter your password"
+              required
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button" 
+              @click="showPassword = !showPassword"
+              aria-label="Toggle password visibility"
+            >
+              <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="d-grid mb-3">
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-lg" 
+            :disabled="loading"
+          >
+            <span v-if="loading">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Logging in...
+            </span>
+            <span v-else>
+              <i class="fas fa-sign-in-alt me-2"></i>Login
+            </span>
+          </button>
+        </div>
+
+        <div v-if="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div class="text-center mt-3">
+          <router-link to="/forgot-password" class="text-decoration-none">
+            Forgot password?
+          </router-link>
+          <p class="mt-2 text-muted">
+            Don't have an account? 
+            <router-link to="/register" class="text-primary fw-bold">Register here</router-link>
+          </p>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -32,14 +91,17 @@ const user = ref({
   password: ''
 })
 const loading = ref(false)
+const errorMessage = ref('')
+const showPassword = ref(false)
 
 const handleLogin = async () => {
   loading.value = true
+  errorMessage.value = ''
   try {
     await AuthService.login(user.value)
     router.push('/')
   } catch (error) {
-    alert('Login failed: ' + error.message)
+    errorMessage.value = error.message || 'Login failed. Please try again.'
   } finally {
     loading.value = false
   }
@@ -47,43 +109,46 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.login-container {
-  max-width: 400px;
-  margin: 2rem auto;
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-input {
+.auth-card {
+  max-width: 450px;
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  background-color: white;
 }
 
-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.auth-header {
+  padding-bottom: 1rem;
 }
 
-.register-link {
-  margin-top: 1rem;
-  text-align: center;
+.auth-form {
+  margin-top: 1.5rem;
+}
+
+.form-control-lg {
+  padding: 0.75rem 1rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .auth-container {
+    padding: 1rem;
+  }
+  
+  .auth-card {
+    padding: 1.5rem;
+  }
 }
 </style>
