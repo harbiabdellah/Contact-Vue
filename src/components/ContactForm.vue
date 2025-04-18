@@ -99,13 +99,10 @@
         <button
         v-if="showCancel"
         type="button"
-        @click="$emit('cancel')"
+        @click="cancelBack"
         class="btn btn-outline-secondary btn-lg flex-grow-1 flex-sm-grow-0"
         >
-        <router-link to="/contacts" class="text-decoration-none text-gray-800">
-            <i class="fas fa-times me-2"></i>Cancel
-          </router-link>
-        
+          <i class="fas fa-times me-2"></i>Cancel
           </button>
           <button
             type="submit"
@@ -153,7 +150,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["submit", "cancel"]);
+const emit = defineEmits(["submit"]);
 
 const formData = reactive({
   name: "",
@@ -165,7 +162,6 @@ const formData = reactive({
 
 const emailError = ref("");
 
-// Watch for contact prop changes to populate form
 watch(
   () => props.contact,
   (newContact) => {
@@ -181,7 +177,11 @@ watch(
   },
   { immediate: true }
 );
-
+import { useRouter } from "vue-router";
+const router = useRouter();
+function cancelBack () {
+  router.push({ name: "contacts" });
+};
 const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
