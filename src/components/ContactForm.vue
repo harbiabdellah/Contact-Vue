@@ -1,211 +1,270 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="contact-form">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input
-        id="name"
-        v-model="formData.name"
-        type="text"
-        required
-        placeholder="Enter full name"
-      />
-    </div>
+  <form @submit.prevent="handleSubmit" class="contact-form-container">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h3 class="card-title mb-4 text-center">
+          <i class="fas fa-user-edit me-2"></i>
+          {{ submitText }}
+        </h3>
 
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input
-        id="email"
-        v-model="formData.email"
-        type="email"
-        required
-        placeholder="Enter email address"
-      />
-    </div>
+        <div class="mb-3">
+          <label for="name" class="form-label">
+            <i class="fas fa-user me-2"></i>Full Name
+          </label>
+          <div class="input-group">
+            <input
+              id="name"
+              v-model="formData.name"
+              type="text"
+              class="form-control form-control-lg"
+              required
+              placeholder="Ahmed M.Salah"
+            />
+            <span class="input-group-text">
+              <i class="fas fa-asterisk text-danger small"></i>
+            </span>
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label for="phone">Phone:</label>
-      <input
-        id="phone"
-        v-model="formData.phone"
-        type="tel"
-        required
-        placeholder="Enter phone number"
-      />
-    </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope me-2"></i>Email Address
+          </label>
+          <div class="input-group">
+            <input
+              id="email"
+              v-model="formData.email"
+              type="email"
+              class="form-control form-control-lg"
+              required
+              placeholder="ahmed@gmail.com"
+            />
+            <span class="input-group-text">
+              <i class="fas fa-asterisk text-danger small"></i>
+            </span>
+          </div>
+          <div v-if="emailError" class="text-danger small mt-1">
+            <i class="fas fa-exclamation-circle me-1"></i> {{ emailError }}
+          </div>
+        </div>
 
-    <div class="form-group">
-      <label for="address">Address:</label>
-      <textarea
-        id="address"
-        v-model="formData.address"
-        rows="3"
-        placeholder="Enter full address"
-      ></textarea>
-    </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">
+            <i class="fas fa-phone me-2"></i>Phone Number
+          </label>
+          <div class="input-group">
+            <input
+              id="phone"
+              v-model="formData.phone"
+              type="tel"
+              class="form-control form-control-lg"
+              required
+              placeholder="+1234567890"
+            />
+            <span class="input-group-text">
+              <i class="fas fa-asterisk text-danger small"></i>
+            </span>
+          </div>
+        </div>
 
-    <div class="form-group" v-if="showFavorite">
-      <label class="checkbox-label">
-        <input
-          type="checkbox"
-          v-model="formData.isFavorite"
-        />
-        Mark as favorite
-      </label>
-    </div>
+        <div class="mb-3">
+          <label for="address" class="form-label">
+            <i class="fas fa-map-marker-alt me-2"></i>Address
+          </label>
+          <textarea
+            id="address"
+            v-model="formData.address"
+            class="form-control"
+            rows="3"
+            placeholder="123 Main St, City, Country"
+          ></textarea>
+        </div>
 
-    <div class="form-actions">
-      <button type="submit" class="submit-btn">
-        {{ submitText }}
-      </button>
-      <button
+        <div class="mb-4 form-check" v-if="showFavorite">
+          <input
+            type="checkbox"
+            v-model="formData.isFavorite"
+            class="form-check-input"
+            id="favoriteCheck"
+          />
+          <label class="form-check-label" for="favoriteCheck">
+            <i class="fas fa-star me-1 text-warning"></i>Mark as favorite
+          </label>
+        </div>
+
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4"
+        >
+        
+        <button
+        v-if="showCancel"
         type="button"
         @click="$emit('cancel')"
-        class="cancel-btn"
-        v-if="showCancel"
-      >
-        Cancel
-      </button>
+        class="btn btn-outline-secondary btn-lg flex-grow-1 flex-sm-grow-0"
+        >
+        <router-link to="/contacts" class="text-decoration-none text-gray-800">
+            <i class="fas fa-times me-2"></i>Cancel
+          </router-link>
+        
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg flex-grow-1 flex-sm-grow-0"
+            :disabled="loading"
+          >
+            <span v-if="loading">
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Processing...
+            </span>
+            <span v-else>
+              <i class="fas fa-save me-2"></i>{{ submitText }}
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   </form>
 </template>
+
 <script setup>
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from "vue";
 
 const props = defineProps({
   contact: Object,
-  submitText: String,
-  showCancel: Boolean,
-  showFavorite: Boolean
-})
+  submitText: {
+    type: String,
+    default: "Save Contact",
+  },
+  showCancel: {
+    type: Boolean,
+    default: true,
+  },
+  showFavorite: {
+    type: Boolean,
+    default: true,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-const emit = defineEmits(['submit', 'cancel'])
+const emit = defineEmits(["submit", "cancel"]);
 
 const formData = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  address: '',
-  isFavorite: false
-})
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+  isFavorite: false,
+});
 
-// تحقق من صحة البريد الإلكتروني
+const emailError = ref("");
+
+// Watch for contact prop changes to populate form
+watch(
+  () => props.contact,
+  (newContact) => {
+    if (newContact) {
+      Object.assign(formData, {
+        name: newContact.name || "",
+        email: newContact.email || "",
+        phone: newContact.phone || "",
+        address: newContact.address || "",
+        isFavorite: newContact.isFavorite || false,
+      });
+    }
+  },
+  { immediate: true }
+);
+
 const isValidEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const validateForm = () => {
+  emailError.value = "";
+
+  if (!formData.name) {
+    return "Name is required";
+  }
+
+  if (!formData.email) {
+    return "Email is required";
+  }
+
+  if (!isValidEmail(formData.email)) {
+    emailError.value = "Please enter a valid email address";
+    return "Invalid email format";
+  }
+
+  if (!formData.phone) {
+    return "Phone number is required";
+  }
+
+  return null;
+};
 
 const handleSubmit = () => {
-  if (!formData.name || !formData.email || !formData.phone) {
-    alert('Please fill all required fields')
-    return
+  const validationError = validateForm();
+  if (validationError) {
+    return;
   }
-  
-  if (!isValidEmail(formData.email)) {
-    alert('Please enter a valid email address')
-    return
-  }
-  
-  emit('submit', { ...formData })
-}
+
+  emit("submit", { ...formData });
+};
 </script>
 
 <style scoped>
-.contact-form {
+.contact-form-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 1.5rem;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
+.card {
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #2c3e50;
+.form-control-lg {
+  padding: 0.75rem 1rem;
 }
 
-input, textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-input:focus, textarea:focus {
-  outline: none;
-  border-color: #42b983;
-  box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.2);
-}
-
-textarea {
-  resize: vertical;
+textarea.form-control {
   min-height: 100px;
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: normal;
-  cursor: pointer;
+.form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.2em;
 }
 
-.checkbox-label input {
-  width: auto;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.submit-btn {
+.btn-lg {
   padding: 0.75rem 1.5rem;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s ease;
 }
 
-.submit-btn:hover {
-  background-color: #3aa876;
-  transform: translateY(-1px);
+/* Animation for form inputs */
+.form-control {
+  transition: all 0.3s ease;
 }
 
-.cancel-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+.form-control:focus {
+  border-color: #42b983;
+  box-shadow: 0 0 0 0.25rem rgba(66, 185, 131, 0.25);
 }
 
-.cancel-btn:hover {
-  background-color: #d63b2b;
-  transform: translateY(-1px);
-}
-
-@media (max-width: 600px) {
-  .form-actions {
-    flex-direction: column;
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1.5rem;
   }
-  
-  .submit-btn, .cancel-btn {
+
+  .btn-lg {
     width: 100%;
   }
 }

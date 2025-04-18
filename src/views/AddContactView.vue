@@ -17,7 +17,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useContactStore } from '@/stores/contactStore'
-
+import ContactForm from '@/components/ContactForm.vue'
 const router = useRouter()
 const contactStore = useContactStore()
 const isSubmitting = ref(false)
