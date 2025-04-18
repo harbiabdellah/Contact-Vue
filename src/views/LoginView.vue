@@ -67,9 +67,6 @@
         </div>
 
         <div class="text-center mt-3">
-          <router-link to="/forgot-password" class="text-decoration-none">
-            Forgot password?
-          </router-link>
           <p class="mt-2 text-muted">
             Don't have an account? 
             <router-link to="/register" class="text-primary fw-bold">Register here</router-link>
@@ -107,7 +104,6 @@ const handleLogin = async () => {
       throw new Error("Invalid email or password.")
     }
 
-    // Optionally store user session info
     localStorage.setItem("user", JSON.stringify(response.data[0]))
 
     // Redirect

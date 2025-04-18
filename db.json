@@ -42,6 +42,24 @@
       "address": "street one",
       "isFavorite": false,
       "userId": "6940"
+    },
+    {
+      "id": "fb19",
+      "name": "ahmed",
+      "email": "ahmed@mail.com",
+      "phone": "0105145454",
+      "address": "12sdfasd",
+      "isFavorite": false,
+      "userId": "0cf8"
+    },
+    {
+      "id": "e57b",
+      "name": "mona Zaki",
+      "email": "mona@mail.com",
+      "phone": "01054243234",
+      "address": "safsdf",
+      "isFavorite": false,
+      "userId": "4363"
     }
   ],
   "users": [
@@ -79,6 +97,12 @@
       "id": "0cf8",
       "name": "ahmed",
       "email": "ahm@mail.com",
+      "password": "123456"
+    },
+    {
+      "id": "4363",
+      "name": "noha",
+      "email": "noh@mail.com",
       "password": "123456"
     }
   ]

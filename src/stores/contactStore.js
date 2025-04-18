@@ -46,8 +46,9 @@ export const useContactStore = defineStore('contacts', () => {
       isLoading.value = true
       const { data } = await axios.get('/api/contacts', {
         headers: getAuthHeader()
-      })
-      contacts.value = data
+      } )
+      const user = JSON.parse( localStorage.getItem( 'user' ) ).id
+      contacts.value = data.filter( contact => contact.userId === user )
     } catch (err) {
       error.value = err.message
     } finally {

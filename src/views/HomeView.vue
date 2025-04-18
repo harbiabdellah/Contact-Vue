@@ -9,7 +9,7 @@
           <div class="col-lg-8">
             <h1 class="display-4 fw-bold mb-3">
               <i class="fas fa-address-book me-2"></i>
-              Welcome to Contact App
+              Welcome <span class="text-warning " > {{ user.name }} </span> to Contact App 
             </h1>
             <p class="lead mb-4 opacity-75">
               The modern way to manage your professional and personal
@@ -159,7 +159,7 @@ import ContactCard from "@/components/ContactCard.vue";
 
 const contactStore = useContactStore();
 const router = useRouter();
-
+const user =  JSON.parse(localStorage.getItem("user"));
 const favoriteContacts = computed(() => contactStore.favoriteContacts);
 
 const goToContactDetails = (id) => {

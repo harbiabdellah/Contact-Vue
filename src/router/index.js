@@ -6,55 +6,60 @@ const ContactDetailsView = () => import('@/views/ContactDetailsView.vue')
 const AddContactView = () => import('@/views/AddContactView.vue')
 const EditContactView = () => import('@/views/EditContactView.vue')
 const LoginView = () => import('../views/LoginView.vue')
-
+import PageNotFound from '../views/PageNotFound.vue'
 const RegisterView = () => import('@/views/RegisterView.vue')
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: "/",
+    name: "home",
     component: HomeView,
-    meta: { title: 'Home', requiresAuth: true }
+    meta: { title: "Home", requiresAuth: true },
   },
   {
-    path: '/contacts',
-    name: 'contacts',
+    path: "/contacts",
+    name: "contacts",
     component: ContactListView,
-    meta: { title: 'Contacts', requiresAuth: true }
+    meta: { title: "Contacts", requiresAuth: true },
   },
   {
-    path: '/contacts/add',
-    name: 'add-contact',
+    path: "/contacts/add",
+    name: "add-contact",
     component: AddContactView,
-    meta: { title: 'Add Contact', requiresAuth: true }
+    meta: { title: "Add Contact", requiresAuth: true },
   },
   {
-    path: '/contacts/:id',
-    name: 'contact-details',
+    path: "/contacts/:id",
+    name: "contact-details",
     component: ContactDetailsView,
     props: true,
-    meta: { title: 'Contact Details', requiresAuth: true }
+    meta: { title: "Contact Details", requiresAuth: true },
   },
   {
-    path: '/contacts/edit/:id',
-    name: 'edit-contact',
+    path: "/contacts/edit/:id",
+    name: "edit-contact",
     component: EditContactView,
     props: true,
-    meta: { title: 'Edit Contact', requiresAuth: true }
+    meta: { title: "Edit Contact", requiresAuth: true },
   },
   {
-    path: '/login',
-    name: 'login',
+    path: "/login",
+    name: "login",
     component: LoginView,
-    meta: { title: 'Login', requiresGuest: true }
+    meta: { title: "Login", requiresGuest: true },
   },
   {
-    path: '/register',
-    name: 'register',
+    path: "/register",
+    name: "register",
     component: RegisterView,
-    meta: { title: 'Register', requiresGuest: true }
-  }
-]
+    meta: { title: "Register", requiresGuest: true },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: PageNotFound,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
