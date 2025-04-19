@@ -1,15 +1,6 @@
 {
   "contacts": [
     {
-      "id": "1",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "phone": "1234567890",
-      "address": "123 Main St",
-      "isFavorite": false,
-      "userId": 1
-    },
-    {
       "id": "2",
       "name": "Jane Smith",
       "email": "jane@example.com",
@@ -60,6 +51,40 @@
       "address": "safsdf",
       "isFavorite": false,
       "userId": "4363"
+    },
+    {
+      "name": "Harbi abdallah",
+      "email": "harbia305@gmail.com",
+      "phone": "01129019280",
+      "address": "Daquf Samalout Culturewheel, Minya\n",
+      "isFavorite": false,
+      "id": "605d"
+    },
+    {
+      "name": "mon",
+      "email": "asdfm@mail.coenya",
+      "phone": "01212654656",
+      "address": "menya",
+      "isFavorite": false,
+      "id": "07ee"
+    },
+    {
+      "id": "9a6b",
+      "name": "Harbi  Abd Ella",
+      "email": "harbia305@gmail.com",
+      "phone": "01129019280",
+      "address": "Daquf Samalout Culturewheel, Minya\nDaquf Samalout Culturewheel, Minya",
+      "isFavorite": false,
+      "userId": "51f4"
+    },
+    {
+      "id": "97ca",
+      "name": "fatma",
+      "email": "heba@mailo.com",
+      "phone": "012659559",
+      "address": "123 asfdsdfasdfdsaf",
+      "isFavorite": false,
+      "userId": "0cf8"
     }
   ],
   "users": [
@@ -103,6 +128,12 @@
       "id": "4363",
       "name": "noha",
       "email": "noh@mail.com",
+      "password": "123456"
+    },
+    {
+      "id": "51f4",
+      "name": "Harbi ",
+      "email": "harbia305@gmail.com",
       "password": "123456"
     }
   ]

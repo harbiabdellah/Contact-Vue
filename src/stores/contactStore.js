@@ -79,7 +79,7 @@ export const useContactStore = defineStore('contacts', () => {
 
   const updateContact = async (id, updates) => {
     try {
-      const response = await axios.put(`http://localhost:3000/contacts/${id}`, updates, {
+      const response = await axios.patch(`http://localhost:3000/contacts/${id}`, updates, {
         headers: getAuthHeader()
       })
       const index = contacts.value.findIndex(c => c.id === id)
