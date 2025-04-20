@@ -39,7 +39,6 @@ export const useContactStore = defineStore('contacts', () => {
       contact.phone.includes(searchQuery.value)
     )
   })
-
   // Actions
   const fetchContacts = async () => {
     try {
@@ -51,6 +50,18 @@ export const useContactStore = defineStore('contacts', () => {
       contacts.value = data.filter( contact => contact.userId === user )
     } catch (err) {
       error.value = err.message
+    } finally {
+      isLoading.value = false
+    }
+  }
+  const fetchAllContacts = async () => { 
+    try {
+      const { data } = await axios.get('/api/contacts', {
+        headers: getAuthHeader()
+      })
+      return data
+    } catch (err) {
+      return err.message
     } finally {
       isLoading.value = false
     }
@@ -124,6 +135,7 @@ export const useContactStore = defineStore('contacts', () => {
     favoriteContacts,
     filteredContacts,
     fetchContacts,
+    fetchAllContacts,
     getContactById,
     addContact,
     updateContact,

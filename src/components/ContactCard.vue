@@ -1,7 +1,9 @@
 <template>
   <Transition name="fade" mode="out-in">
-    <div class="card mb-3 shadow-sm hover-shadow border-0 h-100" 
-         :class="{ 'border-start border-warning border-4': contact.isFavorite }">
+    <div
+      class="card mb-3 shadow-sm hover-shadow border-0 h-100"
+      :class="{ 'border-start border-warning border-4': contact.isFavorite }"
+    >
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start mb-3">
           <h3 class="card-title mb-0">
@@ -11,10 +13,12 @@
               <i class="fas fa-star"></i>
             </span>
           </h3>
-          <button 
-            @click.stop="toggleFavorite" 
+          <button
+            @click.stop="toggleFavorite"
             class="btn btn-sm btn-outline-warning"
-            :aria-label="contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+            :aria-label="
+              contact.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+            "
           >
             <i :class="contact.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
           </button>
@@ -23,11 +27,15 @@
         <div class="contact-details mb-3">
           <p class="mb-2">
             <i class="fas fa-envelope me-2 text-muted"></i>
-            <a :href="`mailto:${contact.email}`" class="text-decoration-none">{{ contact.email }}</a>
+            <a :href="`mailto:${contact.email}`" class="text-decoration-none">{{
+              contact.email
+            }}</a>
           </p>
           <p class="mb-2">
             <i class="fas fa-phone me-2 text-muted"></i>
-            <a :href="`tel:${contact.phone}`" class="text-decoration-none">{{ contact.phone }}</a>
+            <a :href="`tel:${contact.phone}`" class="text-decoration-none">{{
+              contact.phone
+            }}</a>
           </p>
           <p v-if="contact.address" class="mb-0">
             <i class="fas fa-map-marker-alt me-2 text-muted"></i>
@@ -36,20 +44,20 @@
         </div>
 
         <div class="d-flex flex-wrap gap-2">
-          <router-link 
+          <router-link
             :to="{ name: 'contact-details', params: { id: contact.id } }"
             class="btn btn-sm btn-outline-primary flex-grow-1"
           >
             <i class="fas fa-info-circle me-1"></i> Details
           </router-link>
-          <router-link 
+          <router-link
             :to="{ name: 'edit-contact', params: { id: contact.id } }"
             class="btn btn-sm btn-outline-success flex-grow-1"
           >
             <i class="fas fa-edit me-1"></i> Edit
           </router-link>
-          <button 
-            @click.stop="deleteContact" 
+          <button
+            @click.stop="openDeleteModal"
             class="btn btn-sm btn-outline-danger flex-grow-1"
             aria-label="Delete contact"
           >
@@ -59,34 +67,129 @@
       </div>
     </div>
   </Transition>
+
+  <!-- Bootstrap Toast Notification -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div
+      ref="deleteToast"
+      class="toast"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div class="toast-header bg-danger text-white">
+        <strong class="me-auto">Confirm Deletion</strong>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="toast-body">
+        <p>
+          Are you sure you want to delete <strong>{{ contact.name }}</strong
+          >?
+        </p>
+        <div class="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            data-bs-dismiss="toast"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            @click="confirmDelete"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Confirmation Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong>{{ contact.name }}</strong
+          >?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" @click="confirmDelete">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { useContactStore } from '@/stores/contactStore'
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useContactStore } from "@/stores/contactStore";
+
+let deleteModalInstance = null;
 
 const props = defineProps({
   contact: {
     type: Object,
     required: true,
-    validator: (value) => {
-      return ['id', 'name', 'email', 'phone'].every(key => key in value)
-    }
-  }
-})
+    validator: (value) =>
+      ["id", "name", "email", "phone"].every((key) => key in value),
+  },
+});
 
-const router = useRouter()
-const contactStore = useContactStore()
+const router = useRouter();
+const contactStore = useContactStore();
 
 const toggleFavorite = async () => {
-  await contactStore.toggleFavorite(props.contact.id)
-}
+  await contactStore.toggleFavorite(props.contact.id);
+};
 
-const deleteContact = async () => {
-  if (confirm(`Are you sure you want to delete ${props.contact.name}?`)) {
-    await contactStore.deleteContact(props.contact.id)
+const openDeleteModal = () => {
+  if (deleteModalInstance) {
+    deleteModalInstance.show();
   }
-}
+};
+
+const confirmDelete = async () => {
+  await contactStore.deleteContact(props.contact.id);
+  deleteModalInstance.hide();
+};
+
+onMounted(() => {
+  const modalEl = document.getElementById("deleteModal");
+  if (modalEl) {
+    deleteModalInstance = new bootstrap.Modal(modalEl);
+  }
+});
 </script>
 
 <style scoped>
